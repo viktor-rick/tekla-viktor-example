@@ -60,7 +60,7 @@ class Controller(ViktorController):
 
         # Run the python script and obtain the output files
         generic_analysis = GenericAnalysis(files=[('input.json', file)],
-                                           executable_key="run_tekla_hallway",
+                                           executable_key="run_tekla",
                                            output_filenames=["output.ifc"])
         generic_analysis.execute(timeout=60)
 
