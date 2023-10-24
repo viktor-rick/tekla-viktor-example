@@ -35,3 +35,30 @@ Save a model
 Close a model
 
 `model_handler.Close()`
+
+## Use Tekla through Grasshopper
+A powerful connection can also be made with the Grasshopper-Tekla link. Tekla structures are easily created with Grasshopper and the GH-components available. When creating a VIKTOR - Tekla app, Grasshopper can also be used. The main issue is that we want a .ifc from the Tekla model; and Grasshopper nodes don't allow for saving / export Tekla files. This can be solved like this:
+- Follow [this tutorial](https://docs.viktor.ai/docs/create-apps/software-integrations/rhino-grasshopper/) to set up your VIKTOR app that communicates with GH.
+- Have your worker look for an `output.ifc ` in your worker-directory
+- Use [these Grasshopper nodes](https://www.food4rhino.com/en/resource/rhinoinside-tekla-structures) to create a Tekla model
+- Add the following C# component to your Grasshopper file (feel free to replace some defaults, documentation [here](https://developer.tekla.com/tekla-structures/api/28/26130):
+```
+if (run){
+  Model model = new Model();
+  success = Operation.CreateIFC4ExportFromAll(
+    ifc_path,
+    Operation.IFCExportViewTypeEnum.REFERENCE_VIEW,
+    new List<string> { @"..\\default\\General\\Shared\\IFC\\AdditionalPSets\\CIP Construction data.xml" },
+    Operation.ExportBasePoint.GLOBAL,
+    "__Name__",
+    "ByObjectClass",
+    new Operation.IFCExportFlags { IsLocationFromOrganizer = true, IsPoursEnabled = true},
+    string.Empty);
+  }
+  success = true;
+```
+- Add the success output to a context print (so the worker knows the script is finished)
+
+
+Example:
+![image](https://github.com/viktor-rick/tekla-viktor-example/assets/145433945/16edad97-1578-487f-bb50-024d213c962b)
